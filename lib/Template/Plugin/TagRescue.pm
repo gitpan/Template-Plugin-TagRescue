@@ -3,7 +3,7 @@ package Template::Plugin::TagRescue;
 use strict;
 use HTML::Parser 3.08;
 use vars qw($VERSION);
-$VERSION = 0.01;
+$VERSION = 0.02;
 
 require Template::Plugin;
 use base qw(Template::Plugin);
@@ -20,9 +20,9 @@ sub new {
 
 sub filter_factory {
     my $self = shift;
-
+    
     my $p = HTML::Parser->new(api_version => 3);
-    $p->handler(default => \&escape, 'text,tagname');
+    $p->handler(default => \&escape, 'event,text,tagname');
 
     return sub {
 	my ($context, @tags) = @_;
@@ -41,11 +41,12 @@ sub filter_factory {
     my @except      = ();
 
     sub escape {
-	my ($html, $tagname) = @_;
-	unless (!$tagname or grep {/^$tagname$/i} @except) {
-	    $result .= $escape_html->($html);
+	my ($event, $text, $tagname) = @_;
+	$tagname ||= '';
+	if ($event eq 'text' or !(grep {/^$tagname$/i} @except)) {
+	    $result .= $escape_html->($text);
 	} else {
-	    $result .= $html;
+	    $result .= $text;
 	}
     }
 
@@ -80,16 +81,16 @@ Template::Plugin::TagRescue - TT Plugin to escape html tags except for marked
   [% USE TagRescue %]
 
   [% FILTER html_except_for('b') -%]
-  <B>Bold!</B> and <I>Italic!</I>
+  <B>Bold!</B> and <I>Italic!</I><BR>
   [%- END %]
 
   # Output:
-  # <B>Bold!</B> and &lt;I&gt;Italic!&lt;/I&gt;
+  # <B>Bold!</B> and &lt;I&gt;Italic!&lt;/I&gt;&lt;BR&gt;
 
-  [% '<B>Bold!</B> and <I>Italic!</I>' | html_except_for('b') %]
+  [% '<B>Bold!</B> and <I>Italic!</I><BR>' | html_except_for('i','br') %]
 
   # Output:
-  # <B>Bold!</B> and &lt;I&gt;Italic!&lt;/I&gt;
+  # &lt;B&gt;Bold!&lt;/B&gt; and <I>Italic!</I><BR>
 
 =head1 DESCRIPTION
 

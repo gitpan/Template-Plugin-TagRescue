@@ -1,4 +1,8 @@
 Revision history for Perl extension Template::Plugin::TagRescue
 
-0.01  Thu Dec 7 13:39:45 2002
+0.02  Sun Dec 8 05:41:23 2002
+	- fixed bug in case that html entities was not escaped
+	  when they were included in normal text.
+
+0.01  Sat Dec 7 13:39:45 2002
 	- original version

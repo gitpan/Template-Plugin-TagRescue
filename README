@@ -3,19 +3,19 @@ NAME
        tags except for marked
 
 SYNOPSIS
-       [% USE TagRescue %]
+         [% USE TagRescue %]
 
-       [% FILTER html_except_for('b') -%]
-       <B>Bold!</B> and <I>Italic!</I>
-       [%- END %]
+         [% FILTER html_except_for('b') -%]
+         <B>Bold!</B> and <I>Italic!</I><BR>
+         [%- END %]
 
-       # Output:
-       # <B>Bold!</B> and &lt;I&gt;Italic!&lt;/I&gt;
+         # Output:
+         # <B>Bold!</B> and &lt;I&gt;Italic!&lt;/I&gt;&lt;BR&gt;
 
-       [% '<B>Bold!</B> and <I>Italic!</I>' | html_except_for('b') %]
+         [% '<B>Bold!</B> and <I>Italic!</I><BR>' | html_except_for('i','br') %]
 
-       # Output:
-       # <B>Bold!</B> and &lt;I&gt;Italic!&lt;/I&gt;
+         # Output:
+         # &lt;B&gt;Bold!&lt;/B&gt; and <I>Italic!</I><BR>
 
 
 DESCRIPTION
