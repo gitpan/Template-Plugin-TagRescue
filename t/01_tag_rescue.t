@@ -30,6 +30,11 @@ __END__
 <B>Bold!</B> &quot;and&quot; &lt;I&gt;Italic!&lt;/I&gt; &amp; &lt;A href=&quot;http://www.cpan.org/&quot;&gt;CPAN&lt;/A&gt;
 
 --test--
+[% tagi = ['i']; taga = ['a']; text | html_except_for(tagi, 'b', taga) %]
+--expect--
+<B>Bold!</B> &quot;and&quot; <I>Italic!</I> &amp; <A href="http://www.cpan.org/">CPAN</A>
+
+--test--
 [% taglist = ['b', 'i']; text | html_except_for(taglist) %]
 --expect--
 <B>Bold!</B> &quot;and&quot; <I>Italic!</I> &amp; &lt;A href=&quot;http://www.cpan.org/&quot;&gt;CPAN&lt;/A&gt;

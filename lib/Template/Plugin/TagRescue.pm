@@ -3,7 +3,7 @@ package Template::Plugin::TagRescue;
 use strict;
 use HTML::Parser 3.08;
 use vars qw($VERSION);
-$VERSION = 0.03;
+$VERSION = 0.04;
 
 require Template::Plugin;
 use base qw(Template::Plugin);
@@ -26,7 +26,8 @@ sub filter_factory {
 
     return sub {
 	my ($context, @tags) = @_;
-	reset_vars(ref $tags[0] eq 'ARRAY' ? @{$tags[0]} : @tags);
+        @tags = map { ref $_ eq 'ARRAY' ? @{$_} : $_ } @tags;
+	reset_vars(@tags);
 	return sub {
 	    $p->parse(shift);
 	    $p->eof;

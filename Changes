@@ -1,6 +1,6 @@
 Revision history for Perl extension Template::Plugin::TagRescue
 
-0.03  Thu Aug 14 00:40:57 2003
+0.04  Thu Aug 14 00:40:57 2003
         - fixed bug in case that the filter function can't handle properly
           when arrayref value was passed.
 
