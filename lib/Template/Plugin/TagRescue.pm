@@ -3,7 +3,7 @@ package Template::Plugin::TagRescue;
 use strict;
 use HTML::Parser 3.08;
 use vars qw($VERSION);
-$VERSION = 0.05;
+$VERSION = 0.06;
 
 require Template::Plugin;
 use base qw(Template::Plugin);
@@ -37,6 +37,7 @@ sub filter_factory {
 }
 
 {
+    my $escape_html = escape_method();
     my $result      = '';
     my @except      = ();
 
@@ -44,7 +45,7 @@ sub filter_factory {
 	my ($event, $text, $tagname) = @_;
 	$tagname ||= '';
 	if ($event eq 'text' or !(grep {/^$tagname$/i} @except)) {
-	    $result .= escape_html($text);
+	    $result .= $escape_html->($text);
 	} else {
 	    $result .= $text;
 	}
@@ -54,15 +55,23 @@ sub filter_factory {
     sub get_result { return $result; }
 }
 
-sub escape_html {
-    my $text = shift;
-    for ($text) {
-        s/&/&amp;/g;
-        s/</&lt;/g;
-        s/>/&gt;/g;
-        s/"/&quot;/g
-    }
-    return $text;
+sub escape_method {
+    eval {
+	require Apache::Util;
+	Apache::Util::escape_html('');
+    };
+    return \&Apache::Util::escape_html unless $@;
+
+    return sub {
+        my $text = shift;
+        for ($text) {
+            s/&/&amp;/g;
+            s/</&lt;/g;
+            s/>/&gt;/g;
+            s/"/&quot;/g
+        }
+        return $text;
+    };
 }
 
 1;
