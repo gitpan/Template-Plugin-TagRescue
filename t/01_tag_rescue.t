@@ -6,8 +6,9 @@ test_expect(\*DATA, undef, {
 });
 
 __END__
---test--
 [% USE TagRescue -%]
+
+--test--
 [% FILTER html_except_for('b','i') -%]
 <B>Bold!</B> & <I>Italic!</I>
 [%- END %]
@@ -15,7 +16,6 @@ __END__
 <B>Bold!</B> &amp; <I>Italic!</I>
 
 --test--
-[% USE TagRescue -%]
 [% FILTER html_except_for('i') -%]
 <B>Bold!</B> & <I>Italic!</I>
 [%- END %]
@@ -23,7 +23,6 @@ __END__
 &lt;B&gt;Bold!&lt;/B&gt; &amp; <I>Italic!</I>
 
 --test--
-[% USE TagRescue -%]
 [% text | html_except_for('i') %]
 [% text | html_except_for('b') %]
 --expect--
@@ -31,7 +30,11 @@ __END__
 <B>Bold!</B> &quot;and&quot; &lt;I&gt;Italic!&lt;/I&gt; &amp; &lt;A href=&quot;http://www.cpan.org/&quot;&gt;CPAN&lt;/A&gt;
 
 --test--
-[% USE TagRescue -%]
+[% taglist = ['b', 'i']; text | html_except_for(taglist) %]
+--expect--
+<B>Bold!</B> &quot;and&quot; <I>Italic!</I> &amp; &lt;A href=&quot;http://www.cpan.org/&quot;&gt;CPAN&lt;/A&gt;
+
+--test--
 [% FILTER html_except_for() -%]
 [% text %]
 [%- END %]

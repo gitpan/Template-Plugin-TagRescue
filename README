@@ -17,6 +17,10 @@ SYNOPSIS
          # Output:
          # &lt;B&gt;Bold!&lt;/B&gt; and <I>Italic!</I><BR>
 
+         [% taglist = ['b', 'br']; '<B>Bold!</B> and <I>Italic!</I><BR>' | html_except_for(taglist) %]
+
+         # Output:
+         # <B>Bold!</B> and &lt;I&gt;Italic!&lt;/I&gt;<BR>
 
 DESCRIPTION
        Template::Plugin::TagRescue is a plugin for TT, which
@@ -31,4 +35,3 @@ AUTHOR
 
 SEE ALSO
        the Template manpage
-

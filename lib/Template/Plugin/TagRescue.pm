@@ -3,7 +3,7 @@ package Template::Plugin::TagRescue;
 use strict;
 use HTML::Parser 3.08;
 use vars qw($VERSION);
-$VERSION = 0.02;
+$VERSION = 0.03;
 
 require Template::Plugin;
 use base qw(Template::Plugin);
@@ -26,7 +26,7 @@ sub filter_factory {
 
     return sub {
 	my ($context, @tags) = @_;
-	reset_vars(@tags);
+	reset_vars(ref $tags[0] eq 'ARRAY' ? @{$tags[0]} : @tags);
 	return sub {
 	    $p->parse(shift);
 	    $p->eof;
@@ -91,6 +91,11 @@ Template::Plugin::TagRescue - TT Plugin to escape html tags except for marked
 
   # Output:
   # &lt;B&gt;Bold!&lt;/B&gt; and <I>Italic!</I><BR>
+
+  [% taglist = ['b', 'br']; '<B>Bold!</B> and <I>Italic!</I><BR>' | html_except_for(taglist) %]
+
+  # Output:
+  # <B>Bold!</B> and &lt;I&gt;Italic!&lt;/I&gt;<BR>
 
 =head1 DESCRIPTION
 
