@@ -3,7 +3,7 @@ package Template::Plugin::TagRescue;
 use strict;
 use HTML::Parser 3.08;
 use vars qw($VERSION);
-$VERSION = 0.04;
+$VERSION = 0.05;
 
 require Template::Plugin;
 use base qw(Template::Plugin);
@@ -37,7 +37,6 @@ sub filter_factory {
 }
 
 {
-    my $escape_html = escape_method();
     my $result      = '';
     my @except      = ();
 
@@ -45,7 +44,7 @@ sub filter_factory {
 	my ($event, $text, $tagname) = @_;
 	$tagname ||= '';
 	if ($event eq 'text' or !(grep {/^$tagname$/i} @except)) {
-	    $result .= $escape_html->($text);
+	    $result .= escape_html($text);
 	} else {
 	    $result .= $text;
 	}
@@ -55,19 +54,15 @@ sub filter_factory {
     sub get_result { return $result; }
 }
 
-sub escape_method {
-    eval {
-	require Apache::Util;
-	Apache::Util::escape_html('');
-    };
-    return \&Apache::Util::escape_html unless $@;
-
-    eval {
-	require HTML::Entities;
-    };
-    return \&HTML::Entities::encode_entities unless $@;
-
-    die q/Can't locate Apache::Util or HTML::Entities/;
+sub escape_html {
+    my $text = shift;
+    for ($text) {
+        s/&/&amp;/g;
+        s/</&lt;/g;
+        s/>/&gt;/g;
+        s/"/&quot;/g
+    }
+    return $text;
 }
 
 1;
@@ -105,7 +100,7 @@ escape html tags except for ones you set in templates.
 
 =head1 AUTHOR
 
-Satoshi Tanimoto E<lt>tanimoto@edge.co.jpE<gt>
+Satoshi Tanimoto E<lt>tanimoto@cpan.orgE<gt>
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
